@@ -1,0 +1,22 @@
+{
+    "@timestamp": "2024-08-16T08:41:00.041Z",
+    "adx": "media",
+    "app": {
+        "cat": [
+            "IAB1",
+            "IAB9"
+        ],
+        "bundle": "1617391485",
+        "name": "Block Blast！",
+        "ver": "4.1.4"
+    },
+    "device": {
+        "country": "RU",
+        "ip": "85.140.24.103",
+        "language": "ru",
+        "os": "IOS",
+        "osv": "17.0.3",
+        "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "ifa": "b5547ac0-86fe-420d-bfc8-a02366e4bce1"
+    }
+}

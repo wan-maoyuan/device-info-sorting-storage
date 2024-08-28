@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:alpine3.20
+    container_name: redis
+    hostname: redis
+    restart: always
+    network_mode: bridge
+    ports:
+      - 6379:6379
+    environment:
+      TZ: Asia/Shanghai
+      REDIS_MAXMEMORY: 2gb
+      REDIS_MAXMEMORY_POLICY: allkeys-lru
+      REDIS_REQUIREPASS: redis123..
+      REDIS_BIND: 0.0.0.0
+      REDIS_TCP_BACKLOG: 511
+      REDIS_TCP_KEEPALIVE: 60
+      REDIS_LOGLEVEL: notice
+      REDIS_TIMEOUT: 10
