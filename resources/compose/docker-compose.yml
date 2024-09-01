@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  device-info-sorting-storage:
+    image: device-info-sorting-storage:v0.0.1
+    container_name: device-info-sorting-storage
+    environment:
+      KAFKA_BROKERS: "192.168.2.43:9094"
+      KAFKA_TOPIC: "test_topic"
+      KAFKA_GROUP: "test_group"
+      KAFKA_PARTITION: 0
+      ANDROID_REDIS_URL: "redis://default:redis123..@192.168.2.43:6379/0"
+      IOS_REDIS_URL: "redis://default:redis123..@192.168.2.43:6379/1"
+      FILE_INTERVAL_HOUR: 1
+      LOG_FILE: ""
+      LOG_LEVEL: "info"
+      LOG_SIZE: 100
+      LOG_AGE: 100
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./device_info:/device_info

@@ -43,8 +43,8 @@ func NewKafkaReader() (*KafkaReader, error) {
 		Brokers: conf.Get().KafkaBrokers,
 		GroupID: conf.Get().KafkaGroup,
 		Topic:   conf.Get().KafkaTopic,
-		// Partition: conf.Get().KafkaPartition,
-		MaxWait:  time.Second,
+		MaxWait: time.Second,
+		// StartOffset: kafka.FirstOffset,
 		MaxBytes: 10e6, // 10MB
 	})
 

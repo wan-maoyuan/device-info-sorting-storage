@@ -9,10 +9,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const (
-	JSON_PATH = "./resources/demo.json"
-)
-
 var countryList = []string{
 	"Afghanistan",
 	"Albania",
@@ -79,7 +75,7 @@ func main() {
 	}
 	defer writer.Close()
 
-	for i := 0; i < 100000000; i++ {
+	for i := 0; i < 10000000; i++ {
 		for _, country := range countryList {
 			msg := getIOSMessage(country)
 			logrus.Debugf("generate a message: %v", msg)

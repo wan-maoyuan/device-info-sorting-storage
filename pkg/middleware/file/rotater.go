@@ -1,6 +1,7 @@
 package file
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,17 +11,23 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var (
+	SaveDuration        = time.Minute * 2
+	SaveMessageMaxCount = 10
+)
+
 // 文件轮换器
 type FileRotater struct {
 	country     string
 	interval    time.Duration
 	currentTime time.Time
 	file        *os.File
+	writer      *bufio.Writer
 	mu          sync.Mutex
 }
 
 func NewFileRotater(country string, interval time.Duration) *FileRotater {
-	currentTime, _ := time.Parse("2006010215", time.Now().Format("2006010215"))
+	currentTime, _ := time.Parse("2006010215", time.Now().UTC().Format("2006010215"))
 
 	return &FileRotater{
 		country:     country,
@@ -43,13 +50,7 @@ func (rotate *FileRotater) Write(line []byte) {
 
 	rotate.updateCurrentTime()
 
-	if _, err := rotate.file.Write(line); err != nil {
-		logrus.Errorf(
-			"country: %s time: %v write line error: %v",
-			rotate.country, rotate.currentTime, err,
-		)
-	}
-
+	rotate.file.Write(line)
 	rotate.file.Write([]byte("\n"))
 }
 
@@ -90,13 +91,15 @@ func (rotate *FileRotater) openNew() (err error) {
 		}
 	}
 
-	fileName := fmt.Sprintf("%s_%s.txt", rotate.country, rotate.currentTime.Format("2006010215"))
+	fileName := fmt.Sprintf("%s_%s.txt", rotate.country, rotate.currentTime.Local().Format("2006010215"))
 	filePath := filepath.Join(dir, fileName)
 
 	rotate.file, err = os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.FileMode(0644))
 	if err != nil {
 		return fmt.Errorf("缓存文件: %s 创建失败: %v", filePath, err)
 	}
+
+	rotate.writer = bufio.NewWriter(rotate.file)
 
 	return nil
 }
@@ -105,5 +108,6 @@ func (rotate *FileRotater) Close() {
 	rotate.mu.Lock()
 	defer rotate.mu.Unlock()
 
+	rotate.writer.Flush()
 	rotate.file.Close()
 }
