@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	"device-info-sorting-storage/pkg/conf"
+	"device-info-sorting-storage/pkg/middleware"
 	"device-info-sorting-storage/pkg/server"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/sirupsen/logrus"
 )
@@ -18,7 +21,7 @@ func init() {
 
 func main() {
 	if err := BeforeStartFunc(); err != nil {
-		logrus.Errorf("服务初始化失败: %v", err)
+		logrus.Errorf("服务资源初始化失败: %v", err)
 		return
 	}
 
@@ -42,16 +45,23 @@ func main() {
 	<-finishCh
 
 	cancel()
-	AfterStopFunc()
-	logrus.Info("服务停止")
+	time.Sleep(time.Second * 5)
+
+	if err := AfterStopFunc(); err != nil {
+		logrus.Info("服务资源清理失败")
+	}
 }
 
 func BeforeStartFunc() error {
+	if err := middleware.InitMiddleware(); err != nil {
+		return fmt.Errorf("InitMiddleware: %v", err)
+	}
 
 	return nil
 }
 
 func AfterStopFunc() error {
+	middleware.CloseMiddleware()
 
 	return nil
 }

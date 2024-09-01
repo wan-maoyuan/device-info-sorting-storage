@@ -15,11 +15,14 @@ func Get() *Conf {
 }
 
 type Conf struct {
-	KafkaBrokers []string `mapstructure:"KAFKA_BROKERS"`
-	KafkaTopic   string   `mapstructure:"KAFKA_TOPIC"`
-	KafkaGroup   string   `mapstructure:"KAFKA_GROUP"`
-	RedisUrl     string   `mapstructure:"REDIS_URL"`
-	Log          Log      `mapstructure:"LOG"`
+	KafkaBrokers     []string `mapstructure:"KAFKA_BROKERS"`
+	KafkaTopic       string   `mapstructure:"KAFKA_TOPIC"`
+	KafkaGroup       string   `mapstructure:"KAFKA_GROUP"`
+	KafkaPartition   int      `mapstructure:"KAFKA_PARTITION"`
+	AndroidRedisUrl  string   `mapstructure:"ANDROID_REDIS_URL"`
+	IOSRedisUrl      string   `mapstructure:"IOS_REDIS_URL"`
+	FileIntervalHour uint     `mapstructure:"FILE_INTERVAL_HOUR"`
+	Log              Log      `mapstructure:"LOG"`
 }
 
 func New() *Conf {
@@ -28,8 +31,12 @@ func New() *Conf {
 	config.KafkaBrokers = strings.Split(viper.GetString("KAFKA_BROKERS"), ",")
 	config.KafkaTopic = viper.GetString("KAFKA_TOPIC")
 	config.KafkaGroup = viper.GetString("KAFKA_GROUP")
+	config.KafkaPartition = viper.GetInt("KAFKA_PARTITION")
 
-	config.RedisUrl = viper.GetString("REDIS_URL")
+	config.AndroidRedisUrl = viper.GetString("ANDROID_REDIS_URL")
+	config.IOSRedisUrl = viper.GetString("IOS_REDIS_URL")
+
+	config.FileIntervalHour = viper.GetUint("FILE_INTERVAL_HOUR")
 
 	config.Log = NewLog()
 

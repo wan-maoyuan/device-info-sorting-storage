@@ -1,6 +1,9 @@
 package server
 
-import "context"
+import (
+	"context"
+	"device-info-sorting-storage/pkg/middleware"
+)
 
 type Server struct {
 }
@@ -11,6 +14,5 @@ func NewServer() (*Server, error) {
 }
 
 func (srv *Server) Run(ctx context.Context) error {
-
-	return nil
+	return middleware.HandleDeviceInfo(ctx)
 }
