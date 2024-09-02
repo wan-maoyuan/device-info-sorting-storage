@@ -18,7 +18,6 @@ type Conf struct {
 	KafkaBrokers     []string `mapstructure:"KAFKA_BROKERS"`
 	KafkaTopic       string   `mapstructure:"KAFKA_TOPIC"`
 	KafkaGroup       string   `mapstructure:"KAFKA_GROUP"`
-	KafkaPartition   int      `mapstructure:"KAFKA_PARTITION"`
 	AndroidRedisUrl  string   `mapstructure:"ANDROID_REDIS_URL"`
 	IOSRedisUrl      string   `mapstructure:"IOS_REDIS_URL"`
 	IsNeedSendMQ     bool     `mapstructure:"IS_NEED_SEND_MQ"`
@@ -34,7 +33,6 @@ func New() *Conf {
 	config.KafkaBrokers = strings.Split(viper.GetString("KAFKA_BROKERS"), ",")
 	config.KafkaTopic = viper.GetString("KAFKA_TOPIC")
 	config.KafkaGroup = viper.GetString("KAFKA_GROUP")
-	config.KafkaPartition = viper.GetInt("KAFKA_PARTITION")
 
 	config.AndroidRedisUrl = viper.GetString("ANDROID_REDIS_URL")
 	config.IOSRedisUrl = viper.GetString("IOS_REDIS_URL")

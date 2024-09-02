@@ -55,7 +55,7 @@ func checkAndSave(msg *kafka.Message, wg *sync.WaitGroup, ch chan struct{}) {
 	case IOS_OS:
 		if middle.iosRedis.SetDeviceID(context.TODO(), msg.Device.IFA) {
 			logrus.Debugf("收到一个 iOS 设备信息: %s", msg.Device.IFA)
-			middle.fileSave.WriteMessage2File(msg)
+			middle.iosFileSave.WriteMessage2File(msg)
 
 			if middle.rabbitChan != nil {
 				middle.rabbitChan <- msg
@@ -64,7 +64,7 @@ func checkAndSave(msg *kafka.Message, wg *sync.WaitGroup, ch chan struct{}) {
 	case ANDROID_OS:
 		if middle.androidRedis.SetDeviceID(context.TODO(), msg.Device.IFA) {
 			logrus.Debugf("收到一个 Android 设备信息: %s", msg.Device.IFA)
-			middle.fileSave.WriteMessage2File(msg)
+			middle.androidFileSave.WriteMessage2File(msg)
 
 			if middle.rabbitChan != nil {
 				middle.rabbitChan <- msg

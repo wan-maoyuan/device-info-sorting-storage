@@ -1,12 +1,10 @@
 export KAFKA_BROKERS="192.168.2.43:9094"
 export KAFKA_TOPIC="test_topic"
 export KAFKA_GROUP="test_group"
-export KAFKA_PARTITION=0
 
 # export KAFKA_BROKERS="47.92.72.122:31594"
 # export KAFKA_TOPIC="test_topic"
 # export KAFKA_GROUP="test_group"
-# export KAFKA_PARTITION=0
 
 export ANDROID_REDIS_URL="redis://default:redis123..@192.168.2.43:6379/0"
 export IOS_REDIS_URL="redis://default:redis123..@192.168.2.43:6379/1"

@@ -18,11 +18,12 @@ const (
 type Country string
 
 type FileSaver struct {
+	osType   string
 	fileMap  sync.Map
 	interval time.Duration
 }
 
-func NewFileSaver() (*FileSaver, error) {
+func NewFileSaver(osType string) (*FileSaver, error) {
 	if _, err := os.Stat(BaseDir); err != nil {
 		os.Mkdir(BaseDir, os.FileMode(0755))
 	}
@@ -31,6 +32,7 @@ func NewFileSaver() (*FileSaver, error) {
 	logrus.Debugf("file saver interval: %v", interval)
 
 	return &FileSaver{
+		osType:   osType,
 		fileMap:  sync.Map{},
 		interval: interval,
 	}, nil
@@ -43,7 +45,7 @@ func (f *FileSaver) WriteMessage2File(msg *kafka.Message) {
 	if ok {
 		rotater = value.(*FileRotater)
 	} else {
-		rotater = NewFileRotater(msg.Device.Country, f.interval)
+		rotater = NewFileRotater(msg.Device.Country, f.osType, f.interval)
 		f.fileMap.Store(msg.Device.Country, rotater)
 	}
 

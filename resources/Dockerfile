@@ -16,7 +16,6 @@ FROM alpine:3.20 as prod
 ENV KAFKA_BROKERS="192.168.2.43:9094"                                   \
     KAFKA_TOPIC="test_topic"                                            \
     KAFKA_GROUP="test_group"                                            \
-    KAFKA_PARTITION=0                                                   \
     ANDROID_REDIS_URL="redis://default:redis123..@192.168.2.43:6379/0"  \
     IOS_REDIS_URL="redis://default:redis123..@192.168.2.43:6379/1"      \
     FILE_INTERVAL_HOUR=1                                                \

@@ -12,18 +12,24 @@ import (
 var middle = new(Middleware)
 
 type Middleware struct {
-	fileSave     *file.FileSaver
-	kafkaReader  *kafka.KafkaReader
-	androidRedis *redis.RedisCli
-	iosRedis     *redis.RedisCli
-	rabbit       *rabbitmq.Rabbit
-	rabbitChan   chan *kafka.Message
+	iosFileSave     *file.FileSaver
+	androidFileSave *file.FileSaver
+	kafkaReader     *kafka.KafkaReader
+	androidRedis    *redis.RedisCli
+	iosRedis        *redis.RedisCli
+	rabbit          *rabbitmq.Rabbit
+	rabbitChan      chan *kafka.Message
 }
 
 func InitMiddleware() (err error) {
-	middle.fileSave, err = file.NewFileSaver()
+	middle.iosFileSave, err = file.NewFileSaver("ios")
 	if err != nil {
-		return fmt.Errorf("NewFileSaver: %v", err)
+		return fmt.Errorf("ios NewFileSaver: %v", err)
+	}
+
+	middle.androidFileSave, err = file.NewFileSaver("android")
+	if err != nil {
+		return fmt.Errorf("android NewFileSaver: %v", err)
 	}
 
 	middle.kafkaReader, err = kafka.NewKafkaReader()
@@ -55,8 +61,12 @@ func InitMiddleware() (err error) {
 }
 
 func CloseMiddleware() {
-	if middle.fileSave != nil {
-		middle.fileSave.Close()
+	if middle.iosFileSave != nil {
+		middle.iosFileSave.Close()
+	}
+
+	if middle.androidFileSave != nil {
+		middle.androidFileSave.Close()
 	}
 
 	if middle.kafkaReader != nil {
