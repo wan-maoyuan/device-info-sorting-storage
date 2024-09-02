@@ -44,6 +44,7 @@ func handleMessage(msg *kafka.Message, wg *sync.WaitGroup, ch chan struct{}) {
 	go checkAndSave(msg, wg, ch)
 }
 
+// 去 redis 检查 7 天内是否已经存在该设备信息，去重
 func checkAndSave(msg *kafka.Message, wg *sync.WaitGroup, ch chan struct{}) {
 	defer func() {
 		wg.Done()
@@ -55,11 +56,19 @@ func checkAndSave(msg *kafka.Message, wg *sync.WaitGroup, ch chan struct{}) {
 		if middle.iosRedis.SetDeviceID(context.TODO(), msg.Device.IFA) {
 			logrus.Debugf("收到一个 iOS 设备信息: %s", msg.Device.IFA)
 			middle.fileSave.WriteMessage2File(msg)
+
+			if middle.rabbitChan != nil {
+				middle.rabbitChan <- msg
+			}
 		}
 	case ANDROID_OS:
 		if middle.androidRedis.SetDeviceID(context.TODO(), msg.Device.IFA) {
 			logrus.Debugf("收到一个 Android 设备信息: %s", msg.Device.IFA)
 			middle.fileSave.WriteMessage2File(msg)
+
+			if middle.rabbitChan != nil {
+				middle.rabbitChan <- msg
+			}
 		}
 	default:
 		logrus.Errorf("设备系统信息: %s 错误, 需要: %s %s json: %+v", msg.Device.OS, IOS_OS, ANDROID_OS, msg)

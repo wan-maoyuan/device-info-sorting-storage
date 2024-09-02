@@ -48,6 +48,13 @@ export IOS_REDIS_URL="redis://default:redis123..@192.168.2.43:6379/1"
 # 文件分割时间间隔,单位为小时,需要整数
 export FILE_INTERVAL_HOUR=1
 
+# 是否需要发送到 rabbit mq中，0表示不发送，1表示发送
+export IS_NEED_SEND_MQ=0
+# rabbit_mq 链接 uri
+export MQ_URI="amqp://rabbit:123456@192.168.2.43:5672/ads-vhost"
+# 需要发送的 rabbit_mq 队列名称
+export MQ_QUEUE="demo-test"
+
 # 是否需要保存日志，为空不保存，直接在控制台打印。可以填 "./logs/website-verification.log"
 export LOG_FILE=""
 # 日志等级：debug,info,warn,error,fatal,panic
@@ -91,6 +98,9 @@ services:
       ANDROID_REDIS_URL: "redis://default:redis123..@192.168.2.43:6379/0"
       IOS_REDIS_URL: "redis://default:redis123..@192.168.2.43:6379/1"
       FILE_INTERVAL_HOUR: 1
+      IS_NEED_SEND_MQ: 0                                                   
+      MQ_URI: "amqp://rabbit:123456@192.168.2.43:5672/ads-vhost"         
+      MQ_QUEUE: "demo-test"
       LOG_FILE: ""
       LOG_LEVEL: "info"
       LOG_SIZE: 100
