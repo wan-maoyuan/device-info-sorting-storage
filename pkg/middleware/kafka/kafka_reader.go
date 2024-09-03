@@ -40,11 +40,10 @@ type KafkaReader struct {
 
 func NewKafkaReader() (*KafkaReader, error) {
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: conf.Get().KafkaBrokers,
-		GroupID: conf.Get().KafkaGroup,
-		Topic:   conf.Get().KafkaTopic,
-		MaxWait: time.Second,
-		// StartOffset: kafka.FirstOffset,
+		Brokers:  conf.Get().KafkaBrokers,
+		GroupID:  conf.Get().KafkaGroup,
+		Topic:    conf.Get().KafkaTopic,
+		MaxWait:  time.Second,
 		MaxBytes: 10e6, // 10MB
 	})
 

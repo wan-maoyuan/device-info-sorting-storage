@@ -22,7 +22,7 @@ type Conf struct {
 	IOSRedisUrl      string   `mapstructure:"IOS_REDIS_URL"`
 	IsNeedSendMQ     bool     `mapstructure:"IS_NEED_SEND_MQ"`
 	MQURI            string   `mapstructure:"MQ_URI"`
-	MQQueue          string   `mapstructure:"MQ_QUEUE"`
+	MQQueuePrefix    string   `mapstructure:"MQ_QUEUE_PREFIX"`
 	FileIntervalHour uint     `mapstructure:"FILE_INTERVAL_HOUR"`
 	Log              Log      `mapstructure:"LOG"`
 }
@@ -38,7 +38,7 @@ func New() *Conf {
 	config.IOSRedisUrl = viper.GetString("IOS_REDIS_URL")
 	config.IsNeedSendMQ = viper.GetBool("IS_NEED_SEND_MQ")
 	config.MQURI = viper.GetString("MQ_URI")
-	config.MQQueue = viper.GetString("MQ_QUEUE")
+	config.MQQueuePrefix = viper.GetString("MQ_QUEUE_PREFIX")
 
 	config.FileIntervalHour = viper.GetUint("FILE_INTERVAL_HOUR")
 

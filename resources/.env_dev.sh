@@ -11,7 +11,7 @@ export IOS_REDIS_URL="redis://default:redis123..@192.168.2.43:6379/1"
 
 export IS_NEED_SEND_MQ=0
 export MQ_URI="amqp://rabbit:123456@192.168.2.43:5672/ads-vhost"
-export MQ_QUEUE="demo-test"
+export MQ_QUEUE_PREFIX="demo-test"
 
 export FILE_INTERVAL_HOUR=1
 

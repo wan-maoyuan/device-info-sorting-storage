@@ -15,8 +15,6 @@ const (
 	BaseDir = "device_info"
 )
 
-type Country string
-
 type FileSaver struct {
 	osType   string
 	fileMap  sync.Map

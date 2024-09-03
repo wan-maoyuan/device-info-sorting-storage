@@ -13,7 +13,7 @@ services:
       FILE_INTERVAL_HOUR: 1
       IS_NEED_SEND_MQ: 0                                                   
       MQ_URI: "amqp://rabbit:123456@192.168.2.43:5672/ads-vhost"         
-      MQ_QUEUE: "demo-test"
+      MQ_QUEUE_PREFIX: "demo-test"
       LOG_FILE: ""
       LOG_LEVEL: "info"
       LOG_SIZE: 100

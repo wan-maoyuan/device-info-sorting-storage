@@ -54,7 +54,7 @@ func InitMiddleware() (err error) {
 		}
 
 		middle.rabbitChan = make(chan *kafka.Message, 100)
-		middle.rabbit.SendMessage(middle.rabbitChan)
+		go middle.rabbit.SendMessage(middle.rabbitChan)
 	}
 
 	return nil

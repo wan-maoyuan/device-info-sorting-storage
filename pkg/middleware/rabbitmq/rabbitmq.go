@@ -5,14 +5,18 @@ import (
 	"device-info-sorting-storage/pkg/middleware/kafka"
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
 
+var RabbitConcurrentCount int = 100
+
 type Rabbit struct {
-	conn    *amqp.Connection
-	channel *amqp.Channel
+	conn     *amqp.Connection
+	channel  *amqp.Channel
+	queueMap sync.Map
 }
 
 func NewRabbitmq() (*Rabbit, error) {
@@ -29,26 +33,48 @@ func NewRabbitmq() (*Rabbit, error) {
 	}
 
 	return &Rabbit{
-		conn:    conn,
-		channel: channel,
+		conn:     conn,
+		channel:  channel,
+		queueMap: sync.Map{},
 	}, nil
 }
 
-func (mq *Rabbit) SendMessage(msgChan chan *kafka.Message) error {
-	publishQueue, err := mq.channel.QueueDeclare(
-		conf.Get().MQQueue, // 队列名
-		true,               // 是否持续
-		false,              // 是否自动删除
-		false,              // 是否独占
-		false,              // 是否阻塞
-		nil,                // args
-	)
+func (mq *Rabbit) SendMessage(msgChan chan *kafka.Message) {
+	wg := &sync.WaitGroup{}
 
-	if err != nil {
-		return fmt.Errorf("获取 rabbit_mq 发布通道失败: %v", err)
+	for i := 0; i < RabbitConcurrentCount; i++ {
+		wg.Add(1)
+		go mq.parseMessageAndSend(msgChan, wg)
 	}
 
+	wg.Wait()
+}
+
+func (mq *Rabbit) parseMessageAndSend(msgChan chan *kafka.Message, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	for msg := range msgChan {
+		key := fmt.Sprintf("%s_%s", msg.Device.Country, msg.Device.OS)
+		if _, ok := mq.queueMap.Load(key); !ok {
+			queue, err := mq.channel.QueueDeclare(
+				fmt.Sprintf("%s_%s_%s", conf.Get().MQQueuePrefix, msg.Device.Country, msg.Device.OS), // 队列名
+				true,  // 是否持续
+				false, // 是否自动删除
+				false, // 是否独占
+				false, // 是否阻塞
+				nil,   // args
+			)
+			if err != nil {
+				logrus.Errorf("创建 rabbit_mq 消息队列: %s 失败: %v", queue.Name, err)
+				continue
+			}
+
+			mq.queueMap.Store(key, queue)
+		}
+
+		queue, _ := mq.queueMap.Load(key)
+		publishQueue := queue.(amqp.Queue)
+
 		body, err := json.Marshal(msg)
 		if err != nil {
 			logrus.Errorf("解析 Message 结构体 to json 失败: %v", err)
@@ -70,8 +96,6 @@ func (mq *Rabbit) SendMessage(msgChan chan *kafka.Message) error {
 			continue
 		}
 	}
-
-	return nil
 }
 
 func (mq *Rabbit) Close() {

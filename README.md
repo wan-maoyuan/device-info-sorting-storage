@@ -38,8 +38,6 @@ export KAFKA_BROKERS="192.168.2.43:9094"
 export KAFKA_TOPIC="test_topic"
 # kafka 群组
 export KAFKA_GROUP="test_group"
-# kafka 分区ID,目前没有用到
-export KAFKA_PARTITION=0
 
 # 存放 安卓 ID的 redis 服务信息
 export ANDROID_REDIS_URL="redis://default:redis123..@192.168.2.43:6379/0"
@@ -52,8 +50,8 @@ export FILE_INTERVAL_HOUR=1
 export IS_NEED_SEND_MQ=0
 # rabbit_mq 链接 uri
 export MQ_URI="amqp://rabbit:123456@192.168.2.43:5672/ads-vhost"
-# 需要发送的 rabbit_mq 队列名称
-export MQ_QUEUE="demo-test"
+# 需要发送的 rabbit_mq 队列名称前缀
+export MQ_QUEUE_PREFIX="demo-test"
 
 # 是否需要保存日志，为空不保存，直接在控制台打印。可以填 "./logs/website-verification.log"
 export LOG_FILE=""
@@ -94,13 +92,12 @@ services:
       KAFKA_BROKERS: "192.168.2.43:9094"
       KAFKA_TOPIC: "test_topic"
       KAFKA_GROUP: "test_group"
-      KAFKA_PARTITION: 0
       ANDROID_REDIS_URL: "redis://default:redis123..@192.168.2.43:6379/0"
       IOS_REDIS_URL: "redis://default:redis123..@192.168.2.43:6379/1"
       FILE_INTERVAL_HOUR: 1
       IS_NEED_SEND_MQ: 0                                                   
       MQ_URI: "amqp://rabbit:123456@192.168.2.43:5672/ads-vhost"         
-      MQ_QUEUE: "demo-test"
+      MQ_QUEUE_PREFIX: "demo-test"
       LOG_FILE: ""
       LOG_LEVEL: "info"
       LOG_SIZE: 100
